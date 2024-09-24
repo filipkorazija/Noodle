@@ -14,13 +14,13 @@ session_start(); // Start the session to access session variables
     <nav>
         <div class="logo">
             <i class="bx bx-menu menu-icon"></i>
-            <span class="logo-name">Evidenca</span>
+            <span class="logo-name">Noodle</span>
         </div>
 
         <div class="sidebar">
         <div class="logo ">
             <i class="bx bx-menu menu-icon"></i>
-            <span class="logo-name">Evidenca</span>
+            <span class="logo-name">Noodle</span>
         </div>
             <div class="sidebar-content">
                 <ul class="lists">
