@@ -18,14 +18,18 @@ session_start(); // Start the session to access session variables
         </div>
 
         <div class="sidebar">
+        <div class="logo ">
+            <i class="bx bx-menu menu-icon"></i>
+            <span class="logo-name">Evidenca</span>
+        </div>
             <div class="sidebar-content">
                 <ul class="lists">
                     <?php if (isset($_SESSION['vrsta_uporabnika'])): ?>
                         <?php if ($_SESSION['vrsta_uporabnika'] == 'administrator'): ?>
                             <li class="list">
-                                <a href="uredi_uporabnika.php" class="nav-link">
-                                    <i class="bx bx-dashboard icon"></i>
-                                    <span class="link">Uredi uporabnika</span>
+                                <a href="admin_dashboard.php" class="nav-link">
+                                    <i class="bx bxs-dashboard icon"></i>
+                                    <span class="link">Admin Dashboard</span>
                                 </a>
                             </li>
                             <li class="list">
@@ -59,7 +63,7 @@ session_start(); // Start the session to access session variables
                     <?php endif; ?>
                 </ul>
 
-                <div class="bottom-content" style="border: solid 1px black;">
+                <div class="bottom-content">
                     <li class="list">
                         <a href="logout.php" class="nav-link" style="color: white;">
                             <i class="bx bx-log-out icon"></i>
