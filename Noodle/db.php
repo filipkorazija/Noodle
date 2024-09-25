@@ -1,5 +1,6 @@
 <?php
 // db.php
+
 $host = 'localhost';
 $dbname = 'noodle';
 $username = 'root';

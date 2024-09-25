@@ -1,6 +1,11 @@
 <?php
 include 'db.php'; // Povezava z bazo
-
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    // Če uporabnik ni prijavljen, ga preusmeri na login.php
+    header("Location: login.php");
+    exit();
+}
 // Pridobi vse predmete iz baze
 $sql = "SELECT * FROM predmeti"; // SQL query as a string
 $stmt = $conn->prepare($sql); // Prepare the SQL statement
@@ -24,28 +29,13 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch all results
         <br><br>
         <h1 class="text-2xl font-bold mb-4">Seznam predmetov</h1>
 
-        <table class="min-w-full bg-white shadow-md rounded">
-            <thead>
-                <tr>
-                    <th class="px-6 py-4">ID</th>
-                    <th class="px-6 py-4">Ime predmeta</th>
-                    <th class="px-6 py-4">Profesorji</th>
-                    <th class="px-6 py-4">Kljuc</th>
-                    <th class="px-6 py-4">Oddane naloge</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($result as $row): ?>
-                    <tr>
-                        <td class="border px-6 py-4"><?php echo htmlspecialchars($row['ID']); ?></td>
-                        <td class="border px-6 py-4"><?php echo htmlspecialchars($row['Ime_predmeta']); ?></td>
-                        <td class="border px-6 py-4"><?php echo htmlspecialchars($row['Profesorji']); ?></td>
-                        <td class="border px-6 py-4"><?php echo $row['Kljuc'] ? htmlspecialchars($row['Kljuc']) : 'Ni ključa'; ?></td>
-                        <td class="border px-6 py-4"><?php echo $row['Oddane_naloge'] ? htmlspecialchars($row['Oddane_naloge']) : 'Ni oddanih nalog'; ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <ul class="list-disc pl-5">
+            <?php foreach ($result as $row): ?>
+                <li class="mb-2">
+                    <?php echo htmlspecialchars($row['Ime_predmeta']); ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
     </div>
 
 </body>

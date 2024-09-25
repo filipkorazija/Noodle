@@ -1,5 +1,30 @@
 <?php
-session_start(); // Start the session to access session variables
+session_start();
+include 'db.php'; // Vključite povezavo z bazo podatkov
+
+// Preverite, ali je uporabnik prijavljen
+if (isset($_SESSION['uporabnisko_ime'])) {
+    $uporabnisko_ime = $_SESSION['uporabnisko_ime'];
+
+    // Poizvedba za pridobitev slike uporabnika
+    $query = "SELECT user_image FROM uporabniki WHERE uporabnisko_ime = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $uporabnisko_ime);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Preverite, ali je bila najdena slika za uporabnika
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $user_image = $row['user_image'];
+    } else {
+        // Privzeta slika, če uporabnik nima naložene slike
+        $user_image = 'default-profile.png';
+    }
+} else {
+    // Če uporabnik ni prijavljen, nastavi privzeto sliko
+    $user_image = 'default-prafil.png';
+}
 ?>
 <!DOCTYPE html>
 <html lang="sl">
@@ -17,25 +42,30 @@ session_start(); // Start the session to access session variables
             <span class="logo-name">Noodle</span>
         </div>
 
-        <div class="sidebar">
-        <div class="logo ">
-            <i class="bx bx-menu menu-icon"></i>
-            <span class="logo-name">Noodle</span>
+        <!-- Profilna slika v desnem zgornjem kotu -->
+        <div class="user-profile" style="position: absolute; top: 10px; right: 10px;">
+            <img src="<?php echo $user_image; ?>" alt="Profilna slika" class="profile-picture" style="width: 50px; height: 50px; border-radius: 50%;">
         </div>
+
+        <div class="sidebar">
+            <div class="logo">
+                <i class="bx bx-menu menu-icon"></i>
+                <span class="logo-name">Noodle</span>
+            </div>
             <div class="sidebar-content">
                 <ul class="lists">
                     <?php if (isset($_SESSION['vrsta_uporabnika'])): ?>
                         <?php if ($_SESSION['vrsta_uporabnika'] == 'administrator'): ?>
                             <li class="list">
-                                <a href="admin_dashboard.php" class="nav-link">
-                                    <i class="bx bxs-dashboard icon"></i>
-                                    <span class="link">Admin Dashboard</span>
+                                <a href="index.php" class="nav-link">
+                                    <i class="bx bxs-home icon"></i>
+                                    <span class="link">Domov</span>
                                 </a>
                             </li>
                             <li class="list">
-                                <a href="manage_users.php" class="nav-link">
+                                <a href="uredi_uporabnika.php" class="nav-link">
                                     <i class="bx bx-user icon"></i>
-                                    <span class="link">Manage Users</span>
+                                    <span class="link">Uredi uporabnike</span>
                                 </a>
                             </li>
                         <?php elseif ($_SESSION['vrsta_uporabnika'] == 'profesor'): ?>
