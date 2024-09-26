@@ -11,7 +11,6 @@ $sql = "SELECT * FROM predmeti"; // SQL query as a string
 $stmt = $conn->prepare($sql); // Prepare the SQL statement
 $stmt->execute(); // Execute the prepared statement
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch all results
-//seks
 ?>
 
 <!DOCTYPE html>
