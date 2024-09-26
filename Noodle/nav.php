@@ -36,13 +36,26 @@
                                     <span class="link">Uredi uporabnike</span>
                                 </a>
                             </li>
-                        <?php elseif ($_SESSION['vrsta_uporabnika'] == 'profesor'): ?>
                             <li class="list">
-                                <a href="professor_dashboard.php" class="nav-link">
+                                <a href="predmeti.php" class="nav-link">
                                     <i class="bx bx-book icon"></i>
-                                    <span class="link">Professor Dashboard</span>
+                                    <span class="link">Predmeti</span>
                                 </a>
                             </li>
+                        <?php elseif ($_SESSION['vrsta_uporabnika'] == 'profesor'): ?>
+                            <li class="list">
+                                <a href="index.php" class="nav-link">
+                                    <i class="bx bxs-home icon"></i>
+                                    <span class="link">Domov</span>
+                                </a>
+                            </li>
+                            <li class="list">
+                                <a href="predmeti.php" class="nav-link">
+                                    <i class="bx bx-book icon"></i>
+                                    <span class="link">Predmeti</span>
+                                </a>
+                            </li>
+                            
                         <?php elseif ($_SESSION['vrsta_uporabnika'] == 'ucenec'): ?>
                             <li class="list">
                                 <a href="student_dashboard.php" class="nav-link">

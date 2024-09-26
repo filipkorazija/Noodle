@@ -85,6 +85,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body class="bg-gray-100">
 <?php include 'nav.php'; ?>
     <div class="container mx-auto mt-10">
+        <br> <br>
         <h1 class="text-2xl font-bold mb-6">Uredi uporabnike</h1>
         
         <?php if (isset($message)): ?>
