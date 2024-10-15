@@ -1,6 +1,3 @@
-<?php
-// navbar.php
-?>
 <!DOCTYPE html>
 <html lang="sl">
 <head>
@@ -11,7 +8,7 @@
 </head>
 <body>
     <nav class="bg-gray-800 p-4">
-        <div class="container mx-auto flex justify-between items-center">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
             <!-- Logo or website title -->
             <a href="index.php" class="text-white text-lg font-semibold">Noodle</a>
             <div class="flex items-center space-x-4">
@@ -72,7 +69,7 @@
                                 Admin
                             </button>
                             <!-- Dropdown menu -->
-                            <div id="adminMenu" class="absolute left-0 mt-2 w-56 bg-white text-gray-800 py-2 rounded shadow-lg opacity-0 invisible transition-opacity duration-200">
+                            <div id="adminMenu" class="absolute right-0 mt-2 w-56 bg-white text-gray-800 py-2 rounded shadow-lg opacity-0 invisible transition-opacity duration-200">
                                 <a href="admin_panel.php" class="block px-4 py-2 hover:bg-gray-100">Admin Panel</a>
                                 <a href="dodaj_solo.php" class="block px-4 py-2 hover:bg-gray-100">Dodaj Šolo/Razred</a>
                                 <a href="dodaj_uporabnika.php" class="block px-4 py-2 hover:bg-gray-100">Dodaj Uporabnika</a>
