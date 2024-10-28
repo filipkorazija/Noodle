@@ -91,7 +91,7 @@
                 <?php else: ?>
                     <!-- Navigation for non-logged-in users -->
                     <div class="flex items-center space-x-4">
-                        <a href="login.php" class="text-gray-300 hover:text-white">Prijava</a>
+                        <a href="prijava.php" class="text-gray-300 hover:text-white">Prijava</a>
                         <a href="registracija.php" class="text-gray-300 hover:text-white">Registracija</a>
                     </div>
                 <?php endif; ?>

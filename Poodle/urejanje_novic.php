@@ -2,36 +2,66 @@
 // uredi_novice.php
 session_start();
 include('povezava.php');
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-if(!isset($_SESSION['uporabnik_id']) || ($_SESSION['tip'] != 'profesor' && $_SESSION['tip'] != 'skrbnik')) {
+// Check if user is logged in and has the required role
+if (!isset($_SESSION['uporabnik_id']) || ($_SESSION['tip'] != 'profesor' && $_SESSION['tip'] != 'skrbnik')) {
     header('location: prijava.php');
+    exit();
 }
 
 $avtor_id = $_SESSION['uporabnik_id'];
+$sporocilo = null; // Initialize messages
+$napaka = null;
 
-// Dodaj novico
-if(isset($_POST['dodaj'])) {
+// Add a new news item
+if (isset($_POST['dodaj'])) {
     $naslov = $_POST['naslov'];
     $vsebina = $_POST['vsebina'];
 
-    $sql = "INSERT INTO novice (naslov, vsebina, avtor_id) VALUES ('$naslov', '$vsebina', '$avtor_id')";
-    if(mysqli_query($conn, $sql)) {
+    $sql = "INSERT INTO novice (naslov, vsebina, avtor_id) VALUES (?, ?, ?)";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, 'ssi', $naslov, $vsebina, $avtor_id);
+
+    if (mysqli_stmt_execute($stmt)) {
         $sporocilo = "Novica uspešno dodana.";
     } else {
-        $napaka = "Napaka pri dodajanju novice.";
+        $napaka = "Napaka pri dodajanju novice: " . mysqli_error($conn);
     }
+    mysqli_stmt_close($stmt);
 }
 
-// Pridobi novice
-$sql = "SELECT * FROM novice WHERE avtor_id='$avtor_id' ORDER BY datum DESC";
-$result = mysqli_query($conn, $sql);
+// Retrieve news items
+$sql = "SELECT * FROM novice WHERE avtor_id = ? ORDER BY datum DESC";
+$stmt = mysqli_prepare($conn, $sql);
+mysqli_stmt_bind_param($stmt, 'i', $avtor_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
-// Brisanje novice
-if(isset($_GET['brisi_id'])) {
+// Delete a news item
+if (isset($_GET['brisi_id'])) {
     $id = $_GET['brisi_id'];
-    $sql = "DELETE FROM novice WHERE id='$id'";
-    mysqli_query($conn, $sql);
-    header('location: uredi_novice.php');
+
+    // Delete news item with error checking
+    $sql = "DELETE FROM novice WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, 'i', $id);
+    
+    if (mysqli_stmt_execute($stmt)) {
+        $sporocilo = "Novica uspešno odstranjena.";
+        // Fetch updated list of news items
+        $stmt->close();
+        $sql = "SELECT * FROM novice WHERE avtor_id = ? ORDER BY datum DESC";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, 'i', $avtor_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+    } else {
+        $napaka = "Napaka pri brisanju novice: " . mysqli_stmt_error($stmt);
+    }
+    mysqli_stmt_close($stmt);
 }
 ?>
 
@@ -43,18 +73,18 @@ if(isset($_GET['brisi_id'])) {
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigacija -->
+    <!-- Navigation -->
     <?php include('navbar.php'); ?>
 
-    <!-- Vsebina -->
+    <!-- Content -->
     <div class="container mx-auto mt-10">
         <div class="w-full max-w-2xl mx-auto">
-            <?php if(isset($napaka)): ?>
+            <?php if (isset($napaka)): ?>
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                     <?php echo $napaka; ?>
                 </div>
             <?php endif; ?>
-            <?php if(isset($sporocilo)): ?>
+            <?php if (isset($sporocilo)): ?>
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
                     <?php echo $sporocilo; ?>
                 </div>
@@ -87,13 +117,13 @@ if(isset($_GET['brisi_id'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while($novica = mysqli_fetch_assoc($result)): ?>
+                    <?php while ($novica = mysqli_fetch_assoc($result)): ?>
                         <tr>
                             <td class="border px-4 py-2"><?php echo $novica['naslov']; ?></td>
                             <td class="border px-4 py-2"><?php echo date('d.m.Y H:i', strtotime($novica['datum'])); ?></td>
                             <td class="border px-4 py-2">
-                                <a href="uredi_novico.php?id=<?php echo $novica['id']; ?>" class="text-blue-500 hover:underline">Uredi</a> |
-                                <a href="uredi_novice.php?brisi_id=<?php echo $novica['id']; ?>" class="text-red-500 hover:underline">Briši</a>
+                                <a href="uredi_novice.php?id=<?php echo $novica['id']; ?>" class="text-blue-500 hover:underline">Uredi</a> |
+                                <a href="urejanje_novic.php?brisi_id=<?php echo $novica['id']; ?>" class="text-red-500 hover:underline" onclick="return confirm('Ste prepričani, da želite izbrisati?')">Briši</a>
                             </td>
                         </tr>
                     <?php endwhile; ?>

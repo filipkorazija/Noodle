@@ -5,7 +5,7 @@ include('povezava.php');
 
 // Preverimo, ali je uporabnik prijavljen in ima ustrezne pravice
 if (!isset($_SESSION['uporabnik_id']) || ($_SESSION['tip'] != 'profesor' && $_SESSION['tip'] != 'skrbnik')) {
-    header('location: login.php');
+    header('location: prijava.php');
     exit();
 }
 

@@ -74,7 +74,7 @@ $result_letniki = mysqli_query($conn, $sql);
                 </div>
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Ključ Predmeta</label>
-                    <input type="text" name="kljuc" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    <input type="text" name="kljuc" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                     <small class="text-gray-500">Dijaki bodo potrebovali ta ključ za vpis v predmet.</small>
                 </div>
                 <div class="flex items-center justify-between">

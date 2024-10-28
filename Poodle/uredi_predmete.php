@@ -3,16 +3,33 @@
 session_start();
 include('povezava.php');
 
-if(!isset($_SESSION['uporabnik_id']) || ($_SESSION['tip'] != 'profesor' && $_SESSION['tip'] != 'skrbnik')) {
+if (!isset($_SESSION['uporabnik_id']) || ($_SESSION['tip'] != 'profesor' && $_SESSION['tip'] != 'skrbnik')) {
     header('location: prijava.php');
+    exit();
 }
 
 // Brisanje predmeta
-if(isset($_GET['brisi_id'])) {
+if (isset($_GET['brisi_id'])) {
     $id = $_GET['brisi_id'];
-    $sql = "DELETE FROM predmeti WHERE id='$id'";
-    mysqli_query($conn, $sql);
-    header('location: uredi_predmete.php');
+
+    // Check if there are any related naloge
+    $check_sql_naloge = "SELECT COUNT(*) as count FROM naloge WHERE predmet_id='$id'";
+    $check_result_naloge = mysqli_query($conn, $check_sql_naloge);
+    $check_row_naloge = mysqli_fetch_assoc($check_result_naloge);
+
+    // Najprej izbrišite vse povezane prijave
+    $delete_prijave_sql = "DELETE FROM prijave_predmetov WHERE predmet_id='$id'";
+    mysqli_query($conn, $delete_prijave_sql);
+
+    if ($check_row_naloge['count'] > 0 || $check_row_prijave['count'] > 0) {
+        // Notify the user that the subject cannot be deleted
+        $napaka = "Ne morete izbrisati predmeta, dokler obstajajo naloge ali prijave povezane s tem predmetom.";
+    } else {
+        $sql = "DELETE FROM predmeti WHERE id='$id'";
+        mysqli_query($conn, $sql);
+        header('location: uredi_predmete.php');
+        exit();
+    }
 }
 
 // Pridobitev seznam predmetov
@@ -23,7 +40,6 @@ $sql = "SELECT p.id AS predmet_id, p.ime AS predmet_ime, l.ime AS letnik_ime, pr
         JOIN sole s ON pr.sola_id = s.id
         ORDER BY s.ime, pr.ime, l.ime, p.ime";
 $result_predmeti = mysqli_query($conn, $sql);
-
 ?>
 
 <!DOCTYPE html>
@@ -40,6 +56,13 @@ $result_predmeti = mysqli_query($conn, $sql);
     <!-- Vsebina -->
     <div class="container mx-auto mt-10">
         <h1 class="text-3xl font-bold mb-6">Uredi Predmete</h1>
+
+        <?php if (isset($napaka)): ?>
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <?php echo $napaka; ?>
+            </div>
+        <?php endif; ?>
+
         <table class="min-w-full bg-white">
             <thead>
                 <tr>
@@ -51,7 +74,7 @@ $result_predmeti = mysqli_query($conn, $sql);
                 </tr>
             </thead>
             <tbody>
-                <?php while($predmet = mysqli_fetch_assoc($result_predmeti)): ?>
+                <?php while ($predmet = mysqli_fetch_assoc($result_predmeti)): ?>
                     <tr>
                         <td class="border px-4 py-2"><?php echo $predmet['predmet_ime']; ?></td>
                         <td class="border px-4 py-2"><?php echo $predmet['letnik_ime']; ?></td>

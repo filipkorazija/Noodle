@@ -4,7 +4,7 @@ session_start();
 include('povezava.php');
 
 if(!isset($_SESSION['uporabnik_id'])) {
-    header('location: login.php');
+    header('location: prijava.php');
     exit();
 }
 

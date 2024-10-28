@@ -26,7 +26,7 @@ if(isset($_POST['registracija'])) {
             $sql = "INSERT INTO uporabniki (uporabnisko_ime, geslo, ime, priimek, email, tip) VALUES ('$uporabnisko_ime', '$geslo_hash', '$ime', '$priimek', '$email', '$tip')";
             if(mysqli_query($conn, $sql)) {
                 $sporocilo = "Registracija uspešna. Sedaj se lahko prijavite.";
-                header('location: login.php');
+                header('location: prijava.php');
                 exit();
             } else {
                 $napaka = "Napaka pri registraciji: " . mysqli_error($conn);
@@ -92,7 +92,7 @@ if(isset($_POST['registracija'])) {
                         <button name="registracija" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
                             Registracija
                         </button>
-                        <a href="login.php" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                        <a href="prijava.php" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
                             Prijava
                         </a>
                     </div>
